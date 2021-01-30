@@ -7,9 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/painting.dart' as prefix0;
 import 'package:flutter/widgets.dart';
-import 'package:notes/data/models.dart';
-import 'package:notes/services/database.dart';
+import 'package:flutter_sac_app/data/models.dart';
+import 'package:flutter_sac_app/services/database.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+
+import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:flutter/services.dart';
 
 class EditNotePage extends StatefulWidget {
   Function() triggerRefetch;
@@ -35,10 +39,15 @@ class _EditNotePageState extends State<EditNotePage> {
 
   @override
   void initState() {
+    //var location = getUserLocation();
     super.initState();
     if (widget.existingNote == null) {
       currentNote = NotesModel(
-          content: '', title: '', date: DateTime.now(), isImportant: false);
+          content: '',
+          title: '',
+          date: DateTime.now(),
+          isImportant: false,
+          location: '');
       isNoteNew = true;
     } else {
       currentNote = widget.existingNote;
@@ -172,12 +181,47 @@ class _EditNotePageState extends State<EditNotePage> {
     ));
   }
 
+  Future<String> getUserLocation() async {
+    //call this async method from whereever you need
+    LocationData myLocation;
+    String error;
+    Location location = new Location();
+    try {
+      myLocation = await location.getLocation();
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = 'please grant permission';
+        print(error);
+      }
+      if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
+        error = 'permission denied- please enable it from app settings';
+        print(error);
+      }
+      myLocation = null;
+    }
+    LocationData currentLocation = myLocation;
+    final coordinates =
+        new Coordinates(myLocation.latitude, myLocation.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    String stringLocation = '${first.addressLine}';
+    print(stringLocation);
+    return stringLocation;
+  }
+
   void handleSave() async {
+    String location = await getUserLocation();
     setState(() {
       currentNote.title = titleController.text;
       currentNote.content = contentController.text;
       print('Hey there ${currentNote.content}');
+      currentNote.location = location;
+      print('salam');
     });
+    print('bonjour');
+    //await new Future.delayed(const Duration(milliseconds: 1));
+    print('hello');
     if (isNoteNew) {
       var latestNote = await NotesDatabaseService.db.addNoteInDB(currentNote);
       setState(() {
@@ -202,6 +246,12 @@ class _EditNotePageState extends State<EditNotePage> {
   }
 
   void markContentAsDirty(String content) {
+    setState(() {
+      isDirty = true;
+    });
+  }
+
+  void markLocationAsDirty(String location) {
     setState(() {
       isDirty = true;
     });

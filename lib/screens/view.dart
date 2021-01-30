@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:notes/data/models.dart';
-import 'package:notes/screens/edit.dart';
-import 'package:notes/services/database.dart';
+import 'package:flutter_sac_app/data/models.dart';
+import 'package:flutter_sac_app/screens/edit.dart';
+import 'package:flutter_sac_app/services/database.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share/share.dart';
 
@@ -77,6 +77,18 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 padding: const EdgeInsets.only(left: 24),
                 child: Text(
                   DateFormat.yMd().add_jm().format(widget.currentNote.date),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.grey.shade500),
+                ),
+              ),
+            ),
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: headerShouldShow ? 1 : 0,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(
+                  widget.currentNote.location,
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.grey.shade500),
                 ),
@@ -160,7 +172,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
 
   void handleShare() {
     Share.share(
-        '${widget.currentNote.title.trim()}\n(On: ${widget.currentNote.date.toIso8601String().substring(0, 10)})\n\n${widget.currentNote.content}');
+        '${widget.currentNote.title.trim()}\n(On: ${widget.currentNote.date.toIso8601String().substring(0, 10)})\n\n${widget.currentNote.content}\n${widget.currentNote.location}');
   }
 
   void handleBack() {

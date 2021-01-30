@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/services/sharedPref.dart';
+import 'package:flutter_sac_app/services/sharedPref.dart';
 import 'screens/home.dart';
 import 'data/theme.dart';
 

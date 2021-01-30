@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'package:location/location.dart';
+
+var gps = new Location();
 
 class NotesModel {
   int id;
@@ -6,8 +9,15 @@ class NotesModel {
   String content;
   bool isImportant;
   DateTime date;
+  String location;
 
-  NotesModel({this.id, this.title, this.content, this.isImportant, this.date});
+  NotesModel(
+      {this.id,
+      this.title,
+      this.content,
+      this.isImportant,
+      this.date,
+      this.location});
 
   NotesModel.fromMap(Map<String, dynamic> map) {
     this.id = map['_id'];
@@ -15,6 +25,7 @@ class NotesModel {
     this.content = map['content'];
     this.date = DateTime.parse(map['date']);
     this.isImportant = map['isImportant'] == 1 ? true : false;
+    this.location = map['location'];
   }
 
   Map<String, dynamic> toMap() {
@@ -23,7 +34,8 @@ class NotesModel {
       'title': this.title,
       'content': this.content,
       'isImportant': this.isImportant == true ? 1 : 0,
-      'date': this.date.toIso8601String()
+      'date': this.date.toIso8601String(),
+      'location': this.location,
     };
   }
 
@@ -33,5 +45,6 @@ class NotesModel {
     this.content = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
     this.isImportant = Random().nextBool();
     this.date = DateTime.now().add(Duration(hours: Random().nextInt(100)));
+    //this.location = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
   }
 }
