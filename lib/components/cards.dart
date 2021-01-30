@@ -28,8 +28,9 @@ class NoteCardComponent extends StatelessWidget {
     String neatDate = DateFormat.yMd().add_jm().format(noteData.date);
     Color color = colorList.elementAt(noteData.title.length % colorList.length);
     return Container(
+        //liste des SAC
         margin: EdgeInsets.fromLTRB(10, 8, 10, 8),
-        height: 110,
+        height: 132,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           boxShadow: [buildBoxShadow(color, context)],
@@ -62,7 +63,7 @@ class NoteCardComponent extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(top: 8),
                     child: Text(
-                      '${noteData.content.trim().split('\n').first.length <= 30 ? noteData.content.trim().split('\n').first : noteData.content.trim().split('\n').first.substring(0, 30) + '...'}',
+                      '${noteData.location}',
                       style:
                           TextStyle(fontSize: 14, color: Colors.grey.shade400),
                     ),

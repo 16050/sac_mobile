@@ -216,8 +216,10 @@ class _EditNotePageState extends State<EditNotePage> {
       currentNote.title = titleController.text;
       currentNote.content = contentController.text;
       print('Hey there ${currentNote.content}');
-      currentNote.location = location;
-      print('salam');
+      if (widget.existingNote == null) {
+        currentNote.location = location;
+        print('salam');
+      }
     });
     print('bonjour');
     //await new Future.delayed(const Duration(milliseconds: 1));
