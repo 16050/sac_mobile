@@ -15,6 +15,8 @@ import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:flutter/services.dart';
 
+import 'package:camera/camera.dart';
+
 class EditNotePage extends StatefulWidget {
   Function() triggerRefetch;
   NotesModel existingNote;
@@ -67,6 +69,7 @@ class _EditNotePageState extends State<EditNotePage> {
             Container(
               height: 80,
             ),
+            //title
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -98,6 +101,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
               ),
             ),
+            //content
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -119,6 +123,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
               ),
             )
+            //camera
           ],
         ),
         ClipRect(
@@ -208,6 +213,37 @@ class _EditNotePageState extends State<EditNotePage> {
     String stringLocation = '${first.addressLine}';
     print(stringLocation);
     return stringLocation;
+  }
+
+  takePhoto(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext ctxt) {
+          return AlertDialog(
+            title: Text("Change Photo"),
+            content: Container(
+              child: Column(
+                children: <Widget>[
+                  InkWell(
+                    child: Text("Take photo"),
+                    onTap: () => Navigator.pop(ctxt, "take"),
+                  ),
+                  InkWell(
+                    child: Text("Pick photo"),
+                    onTap: () => Navigator.pop(ctxt, "pick"),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Abort"),
+                onPressed: () => Navigator.pop(ctxt),
+              )
+            ],
+          );
+        });
   }
 
   void handleSave() async {

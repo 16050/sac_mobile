@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:location/location.dart';
 
 var gps = new Location();
@@ -10,14 +11,17 @@ class NotesModel {
   bool isImportant;
   DateTime date;
   String location;
+  String picture;
 
-  NotesModel(
-      {this.id,
-      this.title,
-      this.content,
-      this.isImportant,
-      this.date,
-      this.location});
+  NotesModel({
+    this.id,
+    this.title,
+    this.content,
+    this.isImportant,
+    this.date,
+    this.location,
+    this.picture,
+  });
 
   NotesModel.fromMap(Map<String, dynamic> map) {
     this.id = map['_id'];
@@ -26,6 +30,7 @@ class NotesModel {
     this.date = DateTime.parse(map['date']);
     this.isImportant = map['isImportant'] == 1 ? true : false;
     this.location = map['location'];
+    this.picture = map['picture'];
   }
 
   Map<String, dynamic> toMap() {
@@ -36,6 +41,7 @@ class NotesModel {
       'isImportant': this.isImportant == true ? 1 : 0,
       'date': this.date.toIso8601String(),
       'location': this.location,
+      'picture': this.picture,
     };
   }
 
