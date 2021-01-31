@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:ui';
+import 'dart:io' as Io;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -16,6 +18,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:flutter/services.dart';
 
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditNotePage extends StatefulWidget {
   Function() triggerRefetch;
@@ -49,7 +52,8 @@ class _EditNotePageState extends State<EditNotePage> {
           title: '',
           date: DateTime.now(),
           isImportant: false,
-          location: '');
+          location: '',
+          picture: '');
       isNoteNew = true;
     } else {
       currentNote = widget.existingNote;
@@ -122,8 +126,20 @@ class _EditNotePageState extends State<EditNotePage> {
                   border: InputBorder.none,
                 ),
               ),
-            )
+            ),
             //camera
+            Container(
+                child: Column(
+              children: <Widget>[
+                _decideImageView(),
+                RaisedButton(
+                  onPressed: () {
+                    _showChoiceDialog(context);
+                  },
+                  child: Text("Image"),
+                )
+              ],
+            ))
           ],
         ),
         ClipRect(
@@ -215,33 +231,54 @@ class _EditNotePageState extends State<EditNotePage> {
     return stringLocation;
   }
 
-  takePhoto(BuildContext context) {
+  Io.File imageFile;
+  _openGallery(BuildContext context) async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState(() {
+      imageFile = picture;
+    });
+    Navigator.of(context).pop();
+  }
+
+  _openCamera(BuildContext context) async {
+    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState(() {
+      imageFile = picture;
+    });
+    Navigator.of(context).pop();
+  }
+
+  Widget _decideImageView() {
+    if (imageFile == null) {
+      return Text("Aucune photo");
+    } else {
+      return Image.file(imageFile, width: 300, height: 300);
+    }
+  }
+
+  Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
         context: context,
-        barrierDismissible: false,
-        builder: (BuildContext ctxt) {
+        builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Change Photo"),
-            content: Container(
-              child: Column(
+            content: SingleChildScrollView(
+              child: ListBody(
                 children: <Widget>[
-                  InkWell(
-                    child: Text("Take photo"),
-                    onTap: () => Navigator.pop(ctxt, "take"),
+                  GestureDetector(
+                    child: Text("Gallerie"),
+                    onTap: () {
+                      _openGallery(context);
+                    },
                   ),
-                  InkWell(
-                    child: Text("Pick photo"),
-                    onTap: () => Navigator.pop(ctxt, "pick"),
+                  GestureDetector(
+                    child: Text("Appareil photo"),
+                    onTap: () {
+                      _openCamera(context);
+                    },
                   ),
                 ],
               ),
             ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Abort"),
-                onPressed: () => Navigator.pop(ctxt),
-              )
-            ],
           );
         });
   }
@@ -254,6 +291,8 @@ class _EditNotePageState extends State<EditNotePage> {
       print('Hey there ${currentNote.content}');
       if (widget.existingNote == null) {
         currentNote.location = location;
+        final bytes = imageFile.readAsBytesSync();
+        currentNote.picture = base64Encode(bytes);
         print('salam');
       }
     });

@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
@@ -70,6 +72,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 ),
               ),
             ),
+            //date
             AnimatedOpacity(
               duration: Duration(milliseconds: 500),
               opacity: headerShouldShow ? 1 : 0,
@@ -82,6 +85,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 ),
               ),
             ),
+            //location
             AnimatedOpacity(
               duration: Duration(milliseconds: 500),
               opacity: headerShouldShow ? 1 : 0,
@@ -94,6 +98,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 ),
               ),
             ),
+            //content
             Padding(
               padding: const EdgeInsets.only(
                   left: 24.0, top: 36, bottom: 24, right: 24),
@@ -101,7 +106,14 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 widget.currentNote.content,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-            )
+            ),
+            //image
+            Container(
+                child: Column(
+              children: <Widget>[
+                _showImage(),
+              ],
+            )),
           ],
         ),
         ClipRect(
@@ -145,6 +157,12 @@ class _ViewNotePageState extends State<ViewNotePage> {
         )
       ],
     ));
+  }
+
+  Widget _showImage() {
+    final decodedBytes = base64Decode(widget.currentNote.picture);
+    Widget image = Image.memory(decodedBytes);
+    return image;
   }
 
   void handleSave() async {

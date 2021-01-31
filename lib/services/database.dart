@@ -26,7 +26,7 @@ class NotesDatabaseService {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE Notes (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, isImportant INTEGER, location TEXT);');
+          'CREATE TABLE Notes (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, isImportant INTEGER, location TEXT, picture TEXT);');
       print('New table created at $path');
     });
   }
@@ -41,6 +41,7 @@ class NotesDatabaseService {
       'date',
       'isImportant',
       'location',
+      'picture',
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
@@ -68,7 +69,7 @@ class NotesDatabaseService {
     if (newNote.title.trim().isEmpty) newNote.title = 'Untitled Note';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into Notes(title, content, date, isImportant, location) VALUES ("${newNote.title}", "${newNote.content}", "${newNote.date.toIso8601String()}", ${newNote.isImportant == true ? 1 : 0},"${newNote.location}");');
+          'INSERT into Notes(title, content, date, isImportant, location, picture) VALUES ("${newNote.title}", "${newNote.content}", "${newNote.date.toIso8601String()}", ${newNote.isImportant == true ? 1 : 0},"${newNote.location}", "${newNote.picture}");');
     });
     newNote.id = id;
     print('Note added: ${newNote.title} ${newNote.content}');
