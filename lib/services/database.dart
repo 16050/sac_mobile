@@ -2,12 +2,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../data/models.dart';
 
-class NotesDatabaseService {
+class SACDatabaseService {
   String path;
 
-  NotesDatabaseService._();
+  SACDatabaseService._();
 
-  static final NotesDatabaseService db = NotesDatabaseService._();
+  static final SACDatabaseService db = SACDatabaseService._();
 
   Database _database;
 
@@ -26,15 +26,15 @@ class NotesDatabaseService {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE Notes (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, isImportant INTEGER, location TEXT, picture TEXT);');
+          'CREATE TABLE SAC (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, isImportant INTEGER, location TEXT, picture TEXT);');
       print('New table created at $path');
     });
   }
 
-  Future<List<NotesModel>> getNotesFromDB() async {
+  Future<List<SACModel>> getSACFromDB() async {
     final db = await database;
-    List<NotesModel> notesList = [];
-    List<Map> maps = await db.query('Notes', columns: [
+    List<SACModel> notesList = [];
+    List<Map> maps = await db.query('SAC', columns: [
       '_id',
       'title',
       'content',
@@ -45,34 +45,34 @@ class NotesDatabaseService {
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
-        notesList.add(NotesModel.fromMap(map));
+        notesList.add(SACModel.fromMap(map));
       });
     }
     return notesList;
   }
 
-  updateNoteInDB(NotesModel updatedNote) async {
+  updateSACInDB(SACModel updatedSAC) async {
     final db = await database;
-    await db.update('Notes', updatedNote.toMap(),
-        where: '_id = ?', whereArgs: [updatedNote.id]);
-    print('Note updated: ${updatedNote.title} ${updatedNote.content}');
+    await db.update('SAC', updatedSAC.toMap(),
+        where: '_id = ?', whereArgs: [updatedSAC.id]);
+    print('SAC updated: ${updatedSAC.title} ${updatedSAC.content}');
   }
 
-  deleteNoteInDB(NotesModel noteToDelete) async {
+  deleteSACInDB(SACModel noteToDelete) async {
     final db = await database;
-    await db.delete('Notes', where: '_id = ?', whereArgs: [noteToDelete.id]);
-    print('Note deleted');
+    await db.delete('SAC', where: '_id = ?', whereArgs: [noteToDelete.id]);
+    print('SAC deleted');
   }
 
-  Future<NotesModel> addNoteInDB(NotesModel newNote) async {
+  Future<SACModel> addSACInDB(SACModel newSAC) async {
     final db = await database;
-    if (newNote.title.trim().isEmpty) newNote.title = 'Untitled Note';
+    if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into Notes(title, content, date, isImportant, location, picture) VALUES ("${newNote.title}", "${newNote.content}", "${newNote.date.toIso8601String()}", ${newNote.isImportant == true ? 1 : 0},"${newNote.location}", "${newNote.picture}");');
+          'INSERT into SAC(title, content, date, isImportant, location, picture) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", ${newSAC.isImportant == true ? 1 : 0},"${newSAC.location}", "${newSAC.picture}");');
     });
-    newNote.id = id;
-    print('Note added: ${newNote.title} ${newNote.content}');
-    return newNote;
+    newSAC.id = id;
+    print('SAC added: ${newSAC.title} ${newSAC.content}');
+    return newSAC;
   }
 }

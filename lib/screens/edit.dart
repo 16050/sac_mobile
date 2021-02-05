@@ -20,25 +20,25 @@ import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 
-class EditNotePage extends StatefulWidget {
+class EditSACPage extends StatefulWidget {
   Function() triggerRefetch;
-  NotesModel existingNote;
-  EditNotePage({Key key, Function() triggerRefetch, NotesModel existingNote})
+  SACModel existingSAC;
+  EditSACPage({Key key, Function() triggerRefetch, SACModel existingSAC})
       : super(key: key) {
     this.triggerRefetch = triggerRefetch;
-    this.existingNote = existingNote;
+    this.existingSAC = existingSAC;
   }
   @override
-  _EditNotePageState createState() => _EditNotePageState();
+  _EditSACPageState createState() => _EditSACPageState();
 }
 
-class _EditNotePageState extends State<EditNotePage> {
+class _EditSACPageState extends State<EditSACPage> {
   bool isDirty = false;
-  bool isNoteNew = true;
+  bool isSACNew = true;
   FocusNode titleFocus = FocusNode();
   FocusNode contentFocus = FocusNode();
 
-  NotesModel currentNote;
+  SACModel currentSAC;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
 
@@ -46,21 +46,21 @@ class _EditNotePageState extends State<EditNotePage> {
   void initState() {
     //var location = getUserLocation();
     super.initState();
-    if (widget.existingNote == null) {
-      currentNote = NotesModel(
+    if (widget.existingSAC == null) {
+      currentSAC = SACModel(
           content: '',
           title: '',
           date: DateTime.now(),
           isImportant: false,
           location: '',
           picture: '');
-      isNoteNew = true;
+      isSACNew = true;
     } else {
-      currentNote = widget.existingNote;
-      isNoteNew = false;
+      currentSAC = widget.existingSAC;
+      isSACNew = false;
     }
-    titleController.text = currentNote.title;
-    contentController.text = currentNote.content;
+    titleController.text = currentSAC.title;
+    contentController.text = currentSAC.content;
   }
 
   @override
@@ -158,7 +158,7 @@ class _EditNotePageState extends State<EditNotePage> {
                       Spacer(),
                       IconButton(
                         tooltip: 'Mark note as important',
-                        icon: Icon(currentNote.isImportant
+                        icon: Icon(currentSAC.isImportant
                             ? Icons.flag
                             : Icons.outlined_flag),
                         onPressed: titleController.text.trim().isNotEmpty &&
@@ -286,29 +286,29 @@ class _EditNotePageState extends State<EditNotePage> {
   void handleSave() async {
     String location = await getUserLocation();
     setState(() {
-      currentNote.title = titleController.text;
-      currentNote.content = contentController.text;
-      print('Hey there ${currentNote.content}');
-      if (widget.existingNote == null) {
-        currentNote.location = location;
+      currentSAC.title = titleController.text;
+      currentSAC.content = contentController.text;
+      print('Hey there ${currentSAC.content}');
+      if (widget.existingSAC == null) {
+        currentSAC.location = location;
         final bytes = imageFile.readAsBytesSync();
-        currentNote.picture = base64Encode(bytes);
+        currentSAC.picture = base64Encode(bytes);
         print('salam');
       }
     });
     print('bonjour');
     //await new Future.delayed(const Duration(milliseconds: 1));
     print('hello');
-    if (isNoteNew) {
-      var latestNote = await NotesDatabaseService.db.addNoteInDB(currentNote);
+    if (isSACNew) {
+      var latestSAC = await SACDatabaseService.db.addSACInDB(currentSAC);
       setState(() {
-        currentNote = latestNote;
+        currentSAC = latestSAC;
       });
     } else {
-      await NotesDatabaseService.db.updateNoteInDB(currentNote);
+      await SACDatabaseService.db.updateSACInDB(currentSAC);
     }
     setState(() {
-      isNoteNew = false;
+      isSACNew = false;
       isDirty = false;
     });
     widget.triggerRefetch();
@@ -336,13 +336,13 @@ class _EditNotePageState extends State<EditNotePage> {
 
   void markImportantAsDirty() {
     setState(() {
-      currentNote.isImportant = !currentNote.isImportant;
+      currentSAC.isImportant = !currentSAC.isImportant;
     });
     handleSave();
   }
 
   void handleDelete() async {
-    if (isNoteNew) {
+    if (isSACNew) {
       Navigator.pop(context);
     } else {
       showDialog(
@@ -351,7 +351,7 @@ class _EditNotePageState extends State<EditNotePage> {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              title: Text('Delete Note'),
+              title: Text('Delete SAC'),
               content: Text('This note will be deleted permanently'),
               actions: <Widget>[
                 FlatButton(
@@ -361,7 +361,7 @@ class _EditNotePageState extends State<EditNotePage> {
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1)),
                   onPressed: () async {
-                    await NotesDatabaseService.db.deleteNoteInDB(currentNote);
+                    await SACDatabaseService.db.deleteSACInDB(currentSAC);
                     widget.triggerRefetch();
                     Navigator.pop(context);
                     Navigator.pop(context);

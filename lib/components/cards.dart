@@ -13,15 +13,15 @@ List<Color> colorList = [
   Colors.deepOrange
 ];
 
-class NoteCardComponent extends StatelessWidget {
-  const NoteCardComponent({
+class SACCardComponent extends StatelessWidget {
+  const SACCardComponent({
     this.noteData,
     this.onTapAction,
     Key key,
   }) : super(key: key);
 
-  final NotesModel noteData;
-  final Function(NotesModel noteData) onTapAction;
+  final SACModel noteData;
+  final Function(SACModel noteData) onTapAction;
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +115,8 @@ class NoteCardComponent extends StatelessWidget {
   }
 }
 
-class AddNoteCardComponent extends StatelessWidget {
-  const AddNoteCardComponent({
+class AddSACCardComponent extends StatelessWidget {
+  const AddSACCardComponent({
     Key key,
   }) : super(key: key);
 

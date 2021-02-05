@@ -4,7 +4,7 @@ import 'package:location/location.dart';
 
 var gps = new Location();
 
-class NotesModel {
+class SACModel {
   int id;
   String title;
   String content;
@@ -13,7 +13,7 @@ class NotesModel {
   String location;
   String picture;
 
-  NotesModel({
+  SACModel({
     this.id,
     this.title,
     this.content,
@@ -23,7 +23,7 @@ class NotesModel {
     this.picture,
   });
 
-  NotesModel.fromMap(Map<String, dynamic> map) {
+  SACModel.fromMap(Map<String, dynamic> map) {
     this.id = map['_id'];
     this.title = map['title'];
     this.content = map['content'];
@@ -45,7 +45,7 @@ class NotesModel {
     };
   }
 
-  NotesModel.random() {
+  SACModel.random() {
     this.id = Random(10).nextInt(1000) + 1;
     this.title = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
     this.content = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);

@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool isFlagOn = false;
   bool headerShouldHide = false;
-  List<NotesModel> notesList = [];
+  List<SACModel> notesList = [];
   TextEditingController searchController = TextEditingController();
 
   bool isSearchEmpty = true;
@@ -36,15 +36,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    NotesDatabaseService.db.init();
-    setNotesFromDB();
+    SACDatabaseService.db.init();
+    setSACFromDB();
   }
 
-  setNotesFromDB() async {
-    print("Entered setNotes");
-    var fetchedNotes = await NotesDatabaseService.db.getNotesFromDB();
+  setSACFromDB() async {
+    print("Entered setSAC");
+    var fetchedSAC = await SACDatabaseService.db.getSACFromDB();
     setState(() {
-      notesList = fetchedNotes;
+      notesList = fetchedSAC;
     });
   }
 
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          gotoEditNote();
+          gotoEditSAC();
         },
         label: Text('Nouvelle sanction'.toUpperCase()),
         icon: Icon(Icons.add),
@@ -98,9 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
               buildButtonRow(),
               buildImportantIndicatorText(),
               Container(height: 32),
-              ...buildNoteComponentsList(),
-              GestureDetector(
-                  onTap: gotoEditNote, child: AddNoteCardComponent()),
+              ...buildSACComponentsList(),
+              GestureDetector(onTap: gotoEditSAC, child: AddSACCardComponent()),
               Container(height: 100)
             ],
           ),
@@ -215,8 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget testListItem(Color color) {
-    return new NoteCardComponent(
-      noteData: NotesModel.random(),
+    return new SACCardComponent(
+      noteData: SACModel.random(),
     );
   }
 
@@ -239,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Widget> buildNoteComponentsList() {
+  List<Widget> buildSACComponentsList() {
     List<Widget> noteComponentsList = [];
     notesList.sort((a, b) {
       return b.date.compareTo(a.date);
@@ -252,9 +251,9 @@ class _MyHomePageState extends State<MyHomePage> {
             note.content
                 .toLowerCase()
                 .contains(searchController.text.toLowerCase()))
-          noteComponentsList.add(NoteCardComponent(
+          noteComponentsList.add(SACCardComponent(
             noteData: note,
-            onTapAction: openNoteToRead,
+            onTapAction: openSACToRead,
           ));
       });
       return noteComponentsList;
@@ -262,16 +261,16 @@ class _MyHomePageState extends State<MyHomePage> {
     if (isFlagOn) {
       notesList.forEach((note) {
         if (note.isImportant)
-          noteComponentsList.add(NoteCardComponent(
+          noteComponentsList.add(SACCardComponent(
             noteData: note,
-            onTapAction: openNoteToRead,
+            onTapAction: openSACToRead,
           ));
       });
     } else {
       notesList.forEach((note) {
-        noteComponentsList.add(NoteCardComponent(
+        noteComponentsList.add(SACCardComponent(
           noteData: note,
-          onTapAction: openNoteToRead,
+          onTapAction: openSACToRead,
         ));
       });
     }
@@ -290,20 +289,20 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void gotoEditNote() {
+  void gotoEditSAC() {
     Navigator.push(
         context,
         CupertinoPageRoute(
             builder: (context) =>
-                EditNotePage(triggerRefetch: refetchNotesFromDB)));
+                EditSACPage(triggerRefetch: refetchSACFromDB)));
   }
 
-  void refetchNotesFromDB() async {
-    await setNotesFromDB();
+  void refetchSACFromDB() async {
+    await setSACFromDB();
     print("Refetched notes");
   }
 
-  openNoteToRead(NotesModel noteData) async {
+  openSACToRead(SACModel noteData) async {
     setState(() {
       headerShouldHide = true;
     });
@@ -311,8 +310,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(
         context,
         FadeRoute(
-            page: ViewNotePage(
-                triggerRefetch: refetchNotesFromDB, currentNote: noteData)));
+            page: ViewSACPage(
+                triggerRefetch: refetchSACFromDB, currentSAC: noteData)));
     await Future.delayed(Duration(milliseconds: 300), () {});
 
     setState(() {

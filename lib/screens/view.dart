@@ -14,19 +14,19 @@ import 'package:flutter_sac_app/services/database.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share/share.dart';
 
-class ViewNotePage extends StatefulWidget {
+class ViewSACPage extends StatefulWidget {
   Function() triggerRefetch;
-  NotesModel currentNote;
-  ViewNotePage({Key key, Function() triggerRefetch, NotesModel currentNote})
+  SACModel currentSAC;
+  ViewSACPage({Key key, Function() triggerRefetch, SACModel currentSAC})
       : super(key: key) {
     this.triggerRefetch = triggerRefetch;
-    this.currentNote = currentNote;
+    this.currentSAC = currentSAC;
   }
   @override
-  _ViewNotePageState createState() => _ViewNotePageState();
+  _ViewSACPageState createState() => _ViewSACPageState();
 }
 
-class _ViewNotePageState extends State<ViewNotePage> {
+class _ViewSACPageState extends State<ViewSACPage> {
   @override
   void initState() {
     super.initState();
@@ -61,7 +61,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                 duration: Duration(milliseconds: 200),
                 curve: Curves.easeIn,
                 child: Text(
-                  widget.currentNote.title,
+                  widget.currentSAC.title,
                   style: TextStyle(
                     fontFamily: 'ZillaSlab',
                     fontWeight: FontWeight.w700,
@@ -79,7 +79,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 24),
                 child: Text(
-                  DateFormat.yMd().add_jm().format(widget.currentNote.date),
+                  DateFormat.yMd().add_jm().format(widget.currentSAC.date),
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.grey.shade500),
                 ),
@@ -92,7 +92,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 24),
                 child: Text(
-                  widget.currentNote.location,
+                  widget.currentSAC.location,
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.grey.shade500),
                 ),
@@ -103,7 +103,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
               padding: const EdgeInsets.only(
                   left: 24.0, top: 36, bottom: 24, right: 24),
               child: Text(
-                widget.currentNote.content,
+                widget.currentSAC.content,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ),
@@ -131,7 +131,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                       ),
                       Spacer(),
                       IconButton(
-                        icon: Icon(widget.currentNote.isImportant
+                        icon: Icon(widget.currentSAC.isImportant
                             ? Icons.flag
                             : Icons.outlined_flag),
                         onPressed: () {
@@ -160,19 +160,19 @@ class _ViewNotePageState extends State<ViewNotePage> {
   }
 
   Widget _showImage() {
-    final decodedBytes = base64Decode(widget.currentNote.picture);
+    final decodedBytes = base64Decode(widget.currentSAC.picture);
     Widget image = Image.memory(decodedBytes);
     return image;
   }
 
   void handleSave() async {
-    await NotesDatabaseService.db.updateNoteInDB(widget.currentNote);
+    await SACDatabaseService.db.updateSACInDB(widget.currentSAC);
     widget.triggerRefetch();
   }
 
   void markImportantAsDirty() {
     setState(() {
-      widget.currentNote.isImportant = !widget.currentNote.isImportant;
+      widget.currentSAC.isImportant = !widget.currentSAC.isImportant;
     });
     handleSave();
   }
@@ -182,15 +182,15 @@ class _ViewNotePageState extends State<ViewNotePage> {
     Navigator.push(
         context,
         CupertinoPageRoute(
-            builder: (context) => EditNotePage(
-                  existingNote: widget.currentNote,
+            builder: (context) => EditSACPage(
+                  existingSAC: widget.currentSAC,
                   triggerRefetch: widget.triggerRefetch,
                 )));
   }
 
   void handleShare() {
     Share.share(
-        '${widget.currentNote.title.trim()}\n(On: ${widget.currentNote.date.toIso8601String().substring(0, 10)})\n\n${widget.currentNote.content}\n${widget.currentNote.location}');
+        '${widget.currentSAC.title.trim()}\n(On: ${widget.currentSAC.date.toIso8601String().substring(0, 10)})\n\n${widget.currentSAC.content}\n${widget.currentSAC.location}');
   }
 
   void handleBack() {
@@ -214,8 +214,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1)),
                 onPressed: () async {
-                  await NotesDatabaseService.db
-                      .deleteNoteInDB(widget.currentNote);
+                  await SACDatabaseService.db.deleteSACInDB(widget.currentSAC);
                   widget.triggerRefetch();
                   Navigator.pop(context);
                   Navigator.pop(context);
