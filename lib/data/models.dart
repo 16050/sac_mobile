@@ -8,7 +8,7 @@ class SACModel {
   int id;
   String title;
   String content;
-  bool isImportant;
+  String state;
   DateTime date;
   String location;
   String picture;
@@ -17,40 +17,31 @@ class SACModel {
     this.id,
     this.title,
     this.content,
-    this.isImportant,
+    this.state,
     this.date,
     this.location,
     this.picture,
   });
 
   SACModel.fromMap(Map<String, dynamic> map) {
-    this.id = map['_id'];
+    this.id = map['sac_id'];
     this.title = map['title'];
     this.content = map['content'];
     this.date = DateTime.parse(map['date']);
-    this.isImportant = map['isImportant'] == 1 ? true : false;
+    this.state = map['state'];
     this.location = map['location'];
     this.picture = map['picture'];
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      '_id': this.id,
+      'sac_id': this.id,
       'title': this.title,
       'content': this.content,
-      'isImportant': this.isImportant == true ? 1 : 0,
+      'state': this.state,
       'date': this.date.toIso8601String(),
       'location': this.location,
       'picture': this.picture,
     };
-  }
-
-  SACModel.random() {
-    this.id = Random(10).nextInt(1000) + 1;
-    this.title = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
-    this.content = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
-    this.isImportant = Random().nextBool();
-    this.date = DateTime.now().add(Duration(hours: Random().nextInt(100)));
-    //this.location = 'Lorem Ipsum ' * (Random().nextInt(4) + 1);
   }
 }

@@ -26,7 +26,7 @@ class SACDatabaseService {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE SAC (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, isImportant INTEGER, location TEXT, picture TEXT);');
+          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, picture TEXT);');
       print('New table created at $path');
     });
   }
@@ -35,11 +35,11 @@ class SACDatabaseService {
     final db = await database;
     List<SACModel> notesList = [];
     List<Map> maps = await db.query('SAC', columns: [
-      '_id',
+      'sac_id',
       'title',
       'content',
       'date',
-      'isImportant',
+      'state',
       'location',
       'picture',
     ]);
@@ -54,13 +54,13 @@ class SACDatabaseService {
   updateSACInDB(SACModel updatedSAC) async {
     final db = await database;
     await db.update('SAC', updatedSAC.toMap(),
-        where: '_id = ?', whereArgs: [updatedSAC.id]);
+        where: 'sac_id = ?', whereArgs: [updatedSAC.id]);
     print('SAC updated: ${updatedSAC.title} ${updatedSAC.content}');
   }
 
   deleteSACInDB(SACModel noteToDelete) async {
     final db = await database;
-    await db.delete('SAC', where: '_id = ?', whereArgs: [noteToDelete.id]);
+    await db.delete('SAC', where: 'sac_id = ?', whereArgs: [noteToDelete.id]);
     print('SAC deleted');
   }
 
@@ -69,7 +69,7 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, isImportant, location, picture) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", ${newSAC.isImportant == true ? 1 : 0},"${newSAC.location}", "${newSAC.picture}");');
+          'INSERT into SAC(title, content, date, state, location, picture) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", "${newSAC.picture}");');
     });
     newSAC.id = id;
     print('SAC added: ${newSAC.title} ${newSAC.content}');

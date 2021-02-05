@@ -51,7 +51,7 @@ class _EditSACPageState extends State<EditSACPage> {
           content: '',
           title: '',
           date: DateTime.now(),
-          isImportant: false,
+          state: 'Pas encore envoyé',
           location: '',
           picture: '');
       isSACNew = true;
@@ -156,16 +156,16 @@ class _EditSACPageState extends State<EditSACPage> {
                         onPressed: handleBack,
                       ),
                       Spacer(),
-                      IconButton(
+                      /*IconButton(
                         tooltip: 'Mark note as important',
-                        icon: Icon(currentSAC.isImportant
+                        icon: Icon(currentSAC.state
                             ? Icons.flag
                             : Icons.outlined_flag),
                         onPressed: titleController.text.trim().isNotEmpty &&
                                 contentController.text.trim().isNotEmpty
                             ? markImportantAsDirty
                             : null,
-                      ),
+                      ),*/
                       IconButton(
                         icon: Icon(Icons.delete_outline),
                         onPressed: () {
@@ -332,13 +332,6 @@ class _EditSACPageState extends State<EditSACPage> {
     setState(() {
       isDirty = true;
     });
-  }
-
-  void markImportantAsDirty() {
-    setState(() {
-      currentSAC.isImportant = !currentSAC.isImportant;
-    });
-    handleSave();
   }
 
   void handleDelete() async {

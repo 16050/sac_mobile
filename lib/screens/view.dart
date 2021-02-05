@@ -130,22 +130,22 @@ class _ViewSACPageState extends State<ViewSACPage> {
                         onPressed: handleBack,
                       ),
                       Spacer(),
-                      IconButton(
-                        icon: Icon(widget.currentSAC.isImportant
+                      /*IconButton(
+                        icon: Icon(widget.currentSAC.state
                             ? Icons.flag
                             : Icons.outlined_flag),
                         onPressed: () {
                           markImportantAsDirty();
                         },
-                      ),
+                      ),*/
                       IconButton(
                         icon: Icon(Icons.delete_outline),
                         onPressed: handleDelete,
                       ),
-                      IconButton(
+                      /*IconButton(
                         icon: Icon(OMIcons.share),
                         onPressed: handleShare,
-                      ),
+                      ),*/
                       IconButton(
                         icon: Icon(OMIcons.edit),
                         onPressed: handleEdit,
@@ -170,12 +170,12 @@ class _ViewSACPageState extends State<ViewSACPage> {
     widget.triggerRefetch();
   }
 
-  void markImportantAsDirty() {
+  /*void markImportantAsDirty() {
     setState(() {
-      widget.currentSAC.isImportant = !widget.currentSAC.isImportant;
+      widget.currentSAC.state = !widget.currentSAC.state;
     });
     handleSave();
-  }
+  }*/
 
   void handleEdit() {
     Navigator.pop(context);

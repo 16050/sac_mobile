@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         children: <Widget>[
-          GestureDetector(
+          /*GestureDetector(
             onTap: () {
               setState(() {
                 isFlagOn = !isFlagOn;
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(16))),
             ),
-          ),
+          ),*/
           Expanded(
             child: Container(
               alignment: Alignment.center,
@@ -213,12 +213,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget testListItem(Color color) {
-    return new SACCardComponent(
-      noteData: SACModel.random(),
-    );
-  }
-
   Widget buildImportantIndicatorText() {
     return AnimatedCrossFade(
       duration: Duration(milliseconds: 200),
@@ -258,15 +252,16 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       return noteComponentsList;
     }
-    if (isFlagOn) {
+    /*if (isFlagOn) {
       notesList.forEach((note) {
-        if (note.isImportant)
+        if (note.state)
           noteComponentsList.add(SACCardComponent(
             noteData: note,
             onTapAction: openSACToRead,
           ));
       });
-    } else {
+    }*/
+    else {
       notesList.forEach((note) {
         noteComponentsList.add(SACCardComponent(
           noteData: note,

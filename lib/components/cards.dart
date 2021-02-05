@@ -54,11 +54,9 @@ class SACCardComponent extends StatelessWidget {
                   Text(
                     '${noteData.title.trim().length <= 20 ? noteData.title.trim() : noteData.title.trim().substring(0, 20) + '...'}',
                     style: TextStyle(
-                        fontFamily: 'ZillaSlab',
-                        fontSize: 20,
-                        fontWeight: noteData.isImportant
-                            ? FontWeight.w800
-                            : FontWeight.normal),
+                      fontFamily: 'ZillaSlab',
+                      fontSize: 20,
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 8),
@@ -73,11 +71,9 @@ class SACCardComponent extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.flag,
+                        /*Icon(Icons.flag,
                             size: 16,
-                            color: noteData.isImportant
-                                ? color
-                                : Colors.transparent),
+                            color: noteData.state ? color : Colors.transparent),*/
                         Spacer(),
                         Text(
                           '$neatDate',
@@ -100,16 +96,15 @@ class SACCardComponent extends StatelessWidget {
   BoxShadow buildBoxShadow(Color color, BuildContext context) {
     if (Theme.of(context).brightness == Brightness.dark) {
       return BoxShadow(
-          color: noteData.isImportant == true
+          color: noteData.state == true
               ? Colors.black.withAlpha(100)
               : Colors.black.withAlpha(10),
           blurRadius: 8,
           offset: Offset(0, 8));
     }
     return BoxShadow(
-        color: noteData.isImportant == true
-            ? color.withAlpha(60)
-            : color.withAlpha(25),
+        color:
+            noteData.state == true ? color.withAlpha(60) : color.withAlpha(25),
         blurRadius: 8,
         offset: Offset(0, 8));
   }
