@@ -20,7 +20,7 @@ class SACDatabaseService {
 
   init() async {
     String path = await getDatabasesPath();
-    path = join(path, 'notes.db');
+    path = join(path, 'sacs.db');
     print("Entered path $path");
 
     return await openDatabase(path, version: 1,
@@ -31,9 +31,10 @@ class SACDatabaseService {
     });
   }
 
+  //get list of all SAC
   Future<List<SACModel>> getSACFromDB() async {
     final db = await database;
-    List<SACModel> notesList = [];
+    List<SACModel> sacsList = [];
     List<Map> maps = await db.query('SAC', columns: [
       'sac_id',
       'title',
@@ -45,12 +46,13 @@ class SACDatabaseService {
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
-        notesList.add(SACModel.fromMap(map));
+        sacsList.add(SACModel.fromMap(map));
       });
     }
-    return notesList;
+    return sacsList;
   }
 
+  //when editing a sac
   updateSACInDB(SACModel updatedSAC) async {
     final db = await database;
     await db.update('SAC', updatedSAC.toMap(),
@@ -58,12 +60,14 @@ class SACDatabaseService {
     print('SAC updated: ${updatedSAC.title} ${updatedSAC.content}');
   }
 
-  deleteSACInDB(SACModel noteToDelete) async {
+  //when deleting a sac
+  deleteSACInDB(SACModel sacToDelete) async {
     final db = await database;
-    await db.delete('SAC', where: 'sac_id = ?', whereArgs: [noteToDelete.id]);
+    await db.delete('SAC', where: 'sac_id = ?', whereArgs: [sacToDelete.id]);
     print('SAC deleted');
   }
 
+  //when creating a sac
   Future<SACModel> addSACInDB(SACModel newSAC) async {
     final db = await database;
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';

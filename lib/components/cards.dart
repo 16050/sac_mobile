@@ -15,25 +15,25 @@ List<Color> colorList = [
 
 class SACCardComponent extends StatelessWidget {
   const SACCardComponent({
-    this.noteData,
+    this.sacData,
     this.onTapAction,
     Key key,
   }) : super(key: key);
 
-  final SACModel noteData;
-  final Function(SACModel noteData) onTapAction;
+  final SACModel sacData;
+  final Function(SACModel sacData) onTapAction;
 
   @override
   Widget build(BuildContext context) {
-    String neatDate = DateFormat.yMd().add_jm().format(noteData.date);
-    Color color = colorList.elementAt(noteData.title.length % colorList.length);
+    String neatDate = DateFormat.yMd().add_jm().format(sacData.date);
+    Color color = colorList.elementAt(sacData.title.length % colorList.length);
     return Container(
         //liste des SAC
         margin: EdgeInsets.fromLTRB(10, 8, 10, 8),
         height: 132,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [buildBoxShadow(color, context)],
+          //boxShadow: [buildBoxShadow(color, context)],
         ),
         child: Material(
           borderRadius: BorderRadius.circular(16),
@@ -42,7 +42,7 @@ class SACCardComponent extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              onTapAction(noteData);
+              onTapAction(sacData);
             },
             splashColor: color.withAlpha(20),
             highlightColor: color.withAlpha(10),
@@ -52,7 +52,7 @@ class SACCardComponent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    '${noteData.title.trim().length <= 20 ? noteData.title.trim() : noteData.title.trim().substring(0, 20) + '...'}',
+                    '${sacData.title.trim().length <= 20 ? sacData.title.trim() : sacData.title.trim().substring(0, 20) + '...'}',
                     style: TextStyle(
                       fontFamily: 'ZillaSlab',
                       fontSize: 20,
@@ -61,7 +61,7 @@ class SACCardComponent extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(top: 8),
                     child: Text(
-                      '${noteData.location}',
+                      '${sacData.location}',
                       style:
                           TextStyle(fontSize: 14, color: Colors.grey.shade400),
                     ),
@@ -73,7 +73,7 @@ class SACCardComponent extends StatelessWidget {
                       children: <Widget>[
                         /*Icon(Icons.flag,
                             size: 16,
-                            color: noteData.state ? color : Colors.transparent),*/
+                            color: sacData.state ? color : Colors.transparent),*/
                         Spacer(),
                         Text(
                           '$neatDate',
@@ -93,10 +93,10 @@ class SACCardComponent extends StatelessWidget {
         ));
   }
 
-  BoxShadow buildBoxShadow(Color color, BuildContext context) {
+  /*BoxShadow buildBoxShadow(Color color, BuildContext context) {
     if (Theme.of(context).brightness == Brightness.dark) {
       return BoxShadow(
-          color: noteData.state == true
+          color: sacData.state == true
               ? Colors.black.withAlpha(100)
               : Colors.black.withAlpha(10),
           blurRadius: 8,
@@ -104,10 +104,10 @@ class SACCardComponent extends StatelessWidget {
     }
     return BoxShadow(
         color:
-            noteData.state == true ? color.withAlpha(60) : color.withAlpha(25),
+            sacData.state == true ? color.withAlpha(60) : color.withAlpha(25),
         blurRadius: 8,
         offset: Offset(0, 8));
-  }
+  }*/
 }
 
 class AddSACCardComponent extends StatelessWidget {

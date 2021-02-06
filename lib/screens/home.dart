@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool isFlagOn = false;
   bool headerShouldHide = false;
-  List<SACModel> notesList = [];
+  List<SACModel> sacsList = [];
   TextEditingController searchController = TextEditingController();
 
   bool isSearchEmpty = true;
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print("Entered setSAC");
     var fetchedSAC = await SACDatabaseService.db.getSACFromDB();
     setState(() {
-      notesList = fetchedSAC;
+      sacsList = fetchedSAC;
     });
   }
 
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           gotoEditSAC();
         },
-        label: Text('Nouvelle sanction'.toUpperCase()),
+        label: Text('Synchronisation'.toUpperCase()),
         icon: Icon(Icons.add),
       ),
       body: GestureDetector(
@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
       firstChild: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Text(
-          'Only showing notes marked important'.toUpperCase(),
+          'Only showing sacs marked important'.toUpperCase(),
           style: TextStyle(
               fontSize: 12, color: Colors.blue, fontWeight: FontWeight.w500),
         ),
@@ -233,43 +233,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> buildSACComponentsList() {
-    List<Widget> noteComponentsList = [];
-    notesList.sort((a, b) {
+    List<Widget> sacComponentsList = [];
+    sacsList.sort((a, b) {
       return b.date.compareTo(a.date);
     });
     if (searchController.text.isNotEmpty) {
-      notesList.forEach((note) {
-        if (note.title
+      sacsList.forEach((sac) {
+        if (sac.title
                 .toLowerCase()
                 .contains(searchController.text.toLowerCase()) ||
-            note.content
+            sac.content
                 .toLowerCase()
                 .contains(searchController.text.toLowerCase()))
-          noteComponentsList.add(SACCardComponent(
-            noteData: note,
+          sacComponentsList.add(SACCardComponent(
+            sacData: sac,
             onTapAction: openSACToRead,
           ));
       });
-      return noteComponentsList;
+      return sacComponentsList;
     }
     /*if (isFlagOn) {
-      notesList.forEach((note) {
-        if (note.state)
-          noteComponentsList.add(SACCardComponent(
-            noteData: note,
+      sacsList.forEach((sac) {
+        if (sac.state)
+          sacComponentsList.add(SACCardComponent(
+            sacData: sac,
             onTapAction: openSACToRead,
           ));
       });
     }*/
     else {
-      notesList.forEach((note) {
-        noteComponentsList.add(SACCardComponent(
-          noteData: note,
+      sacsList.forEach((sac) {
+        sacComponentsList.add(SACCardComponent(
+          sacData: sac,
           onTapAction: openSACToRead,
         ));
       });
     }
-    return noteComponentsList;
+    return sacComponentsList;
   }
 
   void handleSearch(String value) {
@@ -294,10 +294,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void refetchSACFromDB() async {
     await setSACFromDB();
-    print("Refetched notes");
+    print("Refetched sacs");
   }
 
-  openSACToRead(SACModel noteData) async {
+  openSACToRead(SACModel sacData) async {
     setState(() {
       headerShouldHide = true;
     });
@@ -306,7 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context,
         FadeRoute(
             page: ViewSACPage(
-                triggerRefetch: refetchSACFromDB, currentSAC: noteData)));
+                triggerRefetch: refetchSACFromDB, currentSAC: sacData)));
     await Future.delayed(Duration(milliseconds: 300), () {});
 
     setState(() {
