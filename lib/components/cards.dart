@@ -67,14 +67,6 @@ class SACCardComponent extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 8),
-                    child: Text(
-                      '${sacData.location}',
-                      style:
-                          TextStyle(fontSize: 14, color: Colors.grey.shade400),
-                    ),
-                  ),
-                  Container(
                     margin: EdgeInsets.only(top: 14),
                     alignment: Alignment.centerRight,
                     child: Row(

@@ -140,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.all(Radius.circular(16))),
             ),
           ),*/
+          //search bar
           Expanded(
             child: Container(
               alignment: Alignment.center,

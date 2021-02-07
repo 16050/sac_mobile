@@ -14,6 +14,9 @@ import 'package:flutter_sac_app/services/database.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share/share.dart';
 
+import 'package:flutter_sac_app/components/faderoute.dart';
+import 'package:flutter_sac_app/screens/offender.dart';
+
 class ViewSACPage extends StatefulWidget {
   Function() triggerRefetch;
   SACModel currentSAC;
@@ -53,6 +56,7 @@ class _ViewSACPageState extends State<ViewSACPage> {
             Container(
               height: 40,
             ),
+            //title
             Padding(
               padding: const EdgeInsets.only(
                   left: 24.0, right: 24.0, top: 40.0, bottom: 16),
@@ -85,7 +89,18 @@ class _ViewSACPageState extends State<ViewSACPage> {
                 ),
               ),
             ),
-            AnimatedOpacity(
+            //offender
+            GestureDetector(
+              onTap: () {
+                openOffenderToRead(widget.currentSAC.offender);
+              },
+              child: Text(
+                'Contravenant: ' + widget.currentSAC.offender.name,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, color: Colors.grey.shade500),
+              ),
+            ),
+            /*AnimatedOpacity(
               duration: Duration(milliseconds: 500),
               opacity: headerShouldShow ? 1 : 0,
               child: Padding(
@@ -96,7 +111,7 @@ class _ViewSACPageState extends State<ViewSACPage> {
                       fontWeight: FontWeight.w500, color: Colors.grey.shade500),
                 ),
               ),
-            ),
+            ),*/
             //location
             AnimatedOpacity(
               duration: Duration(milliseconds: 500),
@@ -245,5 +260,12 @@ class _ViewSACPageState extends State<ViewSACPage> {
             ],
           );
         });
+  }
+
+  openOffenderToRead(OffenderModel offender) async {
+    await Future.delayed(Duration(milliseconds: 230), () {});
+    Navigator.push(
+        context, FadeRoute(page: OffenderPage(currentOffender: offender)));
+    await Future.delayed(Duration(milliseconds: 300), () {});
   }
 }
