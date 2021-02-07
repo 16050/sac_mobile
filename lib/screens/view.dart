@@ -85,6 +85,18 @@ class _ViewSACPageState extends State<ViewSACPage> {
                 ),
               ),
             ),
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: headerShouldShow ? 1 : 0,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24),
+                child: Text(
+                  'Contravenant: ' + widget.currentSAC.offender.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.grey.shade500),
+                ),
+              ),
+            ),
             //location
             AnimatedOpacity(
               duration: Duration(milliseconds: 500),

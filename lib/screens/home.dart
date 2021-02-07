@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               buildHeaderWidget(context),
               buildButtonRow(),
-              buildImportantIndicatorText(),
+              //buildImportantIndicatorText(),
               Container(height: 32),
               ...buildSACComponentsList(),
               GestureDetector(onTap: gotoEditSAC, child: AddSACCardComponent()),
@@ -213,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildImportantIndicatorText() {
+  /*Widget buildImportantIndicatorText() {
     return AnimatedCrossFade(
       duration: Duration(milliseconds: 200),
       firstChild: Padding(
@@ -230,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
       crossFadeState:
           isFlagOn ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     );
-  }
+  }*/
 
   List<Widget> buildSACComponentsList() {
     List<Widget> sacComponentsList = [];

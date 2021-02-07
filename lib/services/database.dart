@@ -20,13 +20,15 @@ class SACDatabaseService {
 
   init() async {
     String path = await getDatabasesPath();
-    path = join(path, 'sacs.db');
+    path = join(path, 'sac_mobile.db');
     print("Entered path $path");
 
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, picture TEXT);');
+          'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY, name TEXT);');
+      await db.execute(
+          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, picture TEXT, offender_id INTEGER, offender TEXT);');
       print('New table created at $path');
     });
   }
@@ -43,6 +45,8 @@ class SACDatabaseService {
       'state',
       'location',
       'picture',
+      'offender_id',
+      'offender'
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
@@ -73,10 +77,68 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, picture) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", "${newSAC.picture}");');
+          'INSERT into SAC(title, content, date, state, location, picture, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", "${newSAC.picture}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
     });
     newSAC.id = id;
-    print('SAC added: ${newSAC.title} ${newSAC.content}');
+    print('SAC added: ${newSAC.id} ${newSAC.content}');
     return newSAC;
+  }
+
+  Future<OffenderModel> addOffenderInDB(OffenderModel newOffender) async {
+    final db = await database;
+    int id = await db.transaction((transaction) {
+      transaction.rawInsert(
+          'INSERT into Offender(name) VALUES ("${newOffender.name}");');
+    });
+    newOffender.id = id;
+    print('Offender added: ${newOffender.name}');
+    return newOffender;
+  }
+
+  Future<OffenderModel> existingOffender(String name) async {
+    final db = await database;
+    OffenderModel offender = new OffenderModel(1, '');
+    List<Map> maps = await db.query('Offender', columns: [
+      'offender_id',
+      'name',
+    ]);
+    if (maps.length > 0) {
+      for (Map map in maps) {
+        if (map['name'] == name) {
+          offender = OffenderModel.fromMap(map);
+          print('Offender exist in DB');
+          return offender;
+        } else {
+          offender.name = name;
+        }
+      }
+    }
+    offender.name = name;
+    return addOffenderInDB(offender);
+  }
+
+  Future<List<SACModel>> getOffenderSAC(OffenderModel offender) async {
+    final db = await database;
+    List<SACModel> sacList = [];
+    List<Map> maps = await db.query('SAC', columns: [
+      'sac_id',
+      'title',
+      'content',
+      'date',
+      'state',
+      'location',
+      'picture',
+      'offender_id',
+      'offender'
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['offender_id'] == offender.id) {
+          sacList.add(SACModel.fromMap(map));
+        }
+      });
+    }
+    offender.sacList = sacList;
+    return offender.sacList;
   }
 }

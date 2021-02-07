@@ -37,10 +37,12 @@ class _EditSACPageState extends State<EditSACPage> {
   bool isSACNew = true;
   FocusNode titleFocus = FocusNode();
   FocusNode contentFocus = FocusNode();
+  FocusNode offenderFocus = FocusNode();
 
   SACModel currentSAC;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
+  TextEditingController offenderController = TextEditingController();
 
   @override
   void initState() {
@@ -53,7 +55,8 @@ class _EditSACPageState extends State<EditSACPage> {
           date: DateTime.now(),
           state: 'Pas encore envoyé',
           location: '',
-          picture: '');
+          picture: '',
+          offender: new OffenderModel(1, ''));
       isSACNew = true;
     } else {
       currentSAC = widget.existingSAC;
@@ -84,7 +87,7 @@ class _EditSACPageState extends State<EditSACPage> {
                 maxLines: null,
                 onSubmitted: (text) {
                   titleFocus.unfocus();
-                  FocusScope.of(context).requestFocus(contentFocus);
+                  FocusScope.of(context).requestFocus(offenderFocus);
                 },
                 onChanged: (value) {
                   markTitleAsDirty(value);
@@ -99,6 +102,37 @@ class _EditSACPageState extends State<EditSACPage> {
                   hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 32,
+                      fontFamily: 'ZillaSlab',
+                      fontWeight: FontWeight.w700),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            //offender
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                focusNode: offenderFocus,
+                controller: offenderController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                /*onSubmitted: (text) {
+                  titleFocus.unfocus();
+                  FocusScope.of(context).requestFocus(contentFocus);
+                },
+                onChanged: (value) {
+                  markTitleAsDirty(value);
+                },*/
+                textInputAction: TextInputAction.next,
+                style: TextStyle(
+                    fontFamily: 'ZillaSlab',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Enter an offender',
+                  hintStyle: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontSize: 20,
                       fontFamily: 'ZillaSlab',
                       fontWeight: FontWeight.w700),
                   border: InputBorder.none,
@@ -297,9 +331,11 @@ class _EditSACPageState extends State<EditSACPage> {
       }
     });
     print('bonjour');
-    //await new Future.delayed(const Duration(milliseconds: 1));
-    print('hello');
     if (isSACNew) {
+      var latestOffender =
+          await SACDatabaseService.db.existingOffender(offenderController.text);
+      currentSAC.offender.id = latestOffender.id;
+      currentSAC.offender.name = latestOffender.name;
       var latestSAC = await SACDatabaseService.db.addSACInDB(currentSAC);
       setState(() {
         currentSAC = latestSAC;
