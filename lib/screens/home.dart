@@ -14,9 +14,15 @@ import '../components/cards.dart';
 
 class MyHomePage extends StatefulWidget {
   Function(Brightness brightness) changeTheme;
-  MyHomePage({Key key, this.title, Function(Brightness brightness) changeTheme})
+  UserModel currentUser;
+  MyHomePage(
+      {Key key,
+      this.title,
+      Function(Brightness brightness) changeTheme,
+      UserModel currentUser})
       : super(key: key) {
     this.changeTheme = changeTheme;
+    this.currentUser = currentUser;
   }
 
   final String title;

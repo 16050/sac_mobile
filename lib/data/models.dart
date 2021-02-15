@@ -58,7 +58,7 @@ class OffenderModel {
   String name;
   List<SACModel> sacList;
 
-  OffenderModel(id, name) {
+  OffenderModel(int id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -81,5 +81,31 @@ class OffenderModel {
 
   removeSAC(SACModel sac) {
     sacList.remove(sac);
+  }
+}
+
+class UserModel {
+  int id;
+  String email;
+  String password;
+
+  UserModel(int id, String email, String password) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+  }
+
+  UserModel.fromMap(Map<String, dynamic> map) {
+    this.id = map['user_id'];
+    this.email = map['email'];
+    this.password = map['password'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'user_id': this.id,
+      'email': this.email,
+      'password': this.password,
+    };
   }
 }

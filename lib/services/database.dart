@@ -28,6 +28,8 @@ class SACDatabaseService {
       await db.execute(
           'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY, name TEXT);');
       await db.execute(
+          'CREATE TABLE User (user_id INTEGER PRIMARY KEY, email TEXT, password TEXT);');
+      await db.execute(
           'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, picture TEXT, offender_id INTEGER, offender TEXT);');
       print('New table created at $path');
     });
@@ -133,12 +135,61 @@ class SACDatabaseService {
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
-        if (map['offender_id'] == offender.id) {
+        if (map['offender'] == offender.name) {
           sacList.add(SACModel.fromMap(map));
         }
       });
     }
     offender.sacList = sacList;
     return offender.sacList;
+  }
+
+  Future<bool> userConnexion(String email, String password) async {
+    bool connexion = false;
+    final db = await database;
+    List<Map> maps = await db.query('User', columns: [
+      'user_id',
+      'email',
+      'password',
+    ]);
+    if (maps.length > 0) {
+      for (Map map in maps) {
+        if (map['email'] == email) {
+          if (map['password'] == password) {
+            connexion = true;
+          }
+        }
+      }
+    }
+    return connexion;
+  }
+
+  Future<UserModel> getUser(String email, String password) async {
+    final db = await database;
+    List<Map> maps = await db.query('User', columns: [
+      'user_id',
+      'email',
+      'password',
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['email'] == email) {
+          if (map['password'] == password) {
+            return map;
+          }
+        }
+      });
+    }
+  }
+
+  Future<UserModel> addUserInDB(String email, String password) async {
+    final db = await database;
+    int id = await db.transaction((transaction) {
+      transaction.rawInsert(
+          'INSERT into User(email, password) VALUES ("${email}","${password}");');
+    });
+    UserModel newUser = UserModel(id, email, password);
+    print('User added: ${email}');
+    return newUser;
   }
 }
