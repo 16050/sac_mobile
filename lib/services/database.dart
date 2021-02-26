@@ -58,6 +58,30 @@ class SACDatabaseService {
     return sacsList;
   }
 
+  Future<List<SACModel>> getNotSendedSAC() async {
+    final db = await database;
+    List<SACModel> sacsList = [];
+    List<Map> maps = await db.query('SAC', columns: [
+      'sac_id',
+      'title',
+      'content',
+      'date',
+      'state',
+      'location',
+      'picture',
+      'offender_id',
+      'offender'
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['state'] == 'Pas encore envoyé') {
+          sacsList.add(SACModel.fromMap(map));
+        }
+      });
+    }
+    return sacsList;
+  }
+
   //when editing a sac
   updateSACInDB(SACModel updatedSAC) async {
     final db = await database;

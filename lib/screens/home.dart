@@ -8,6 +8,7 @@ import 'package:flutter_sac_app/data/models.dart';
 import 'package:flutter_sac_app/screens/edit.dart';
 import 'package:flutter_sac_app/screens/view.dart';
 import 'package:flutter_sac_app/services/database.dart';
+import 'package:flutter_sac_app/services/odoo.dart';
 import 'settings.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import '../components/cards.dart';
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          gotoEditSAC();
+          odooConnexion();
         },
         label: Text('Synchronisation'.toUpperCase()),
         icon: Icon(Icons.add),

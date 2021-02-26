@@ -232,10 +232,23 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.push(
         context,
         CupertinoPageRoute(
-            builder: (context) => MyHomePage(
-                title: 'Home', changeTheme: setTheme, currentUser: user)));
+            builder: (context) => MaterialApp(
+                  title: 'Flutter Demo',
+                  theme: theme,
+                  home: MyHomePage(
+                      title: 'Home', changeTheme: setTheme, currentUser: user),
+                )));
   }
 
+  /*Widget goToHome(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: theme,
+      home: MyHomePage(title: 'Home', changeTheme: setTheme, currentUser: user),
+    );
+  }*/
+
+//theme settings
   setTheme(Brightness brightness) {
     if (brightness == Brightness.dark) {
       setState(() {
