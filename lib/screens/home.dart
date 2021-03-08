@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
           odooConnexion();
+          sendSAC();
         },
         label: Text('Synchronisation'.toUpperCase()),
         icon: Icon(Icons.add),
