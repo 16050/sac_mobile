@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             physics: BouncingScrollPhysics(),
             children: <Widget>[
-              Row(
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   GestureDetector(
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ],
-              ),
+              ),*/
               buildHeaderWidget(context),
               buildButtonRow(),
               //buildImportantIndicatorText(),

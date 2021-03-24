@@ -81,7 +81,7 @@ enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
   UserModel user;
-  ThemeData theme = appThemeLight;
+  ThemeData theme = appThemeDark;
 
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
@@ -256,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     } else {
       setState(() {
-        theme = appThemeLight;
+        theme = appThemeDark;
       });
     }
   }
