@@ -26,11 +26,20 @@ class SACDatabaseService {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY, name TEXT);');
+          'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);');
       await db.execute(
-          'CREATE TABLE User (user_id INTEGER PRIMARY KEY, email TEXT, password TEXT);');
+          'CREATE TABLE User (user_id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT);');
+      await db.execute('INSERT into User(email, password) VALUES ("", "");');
       await db.execute(
-          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, picture TEXT, offender_id INTEGER, offender TEXT);');
+          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, offender TEXT);');
+      await db.execute(
+          'CREATE TABLE SAC_type (sac_type_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INT);');
+      await db
+          .execute('INSERT into SAC_type(name, price) VALUES ("type1", "10");');
+      await db
+          .execute('INSERT into SAC_type(name, price) VALUES ("type1", "10");');
+      await db.execute(
+          'CREATE TABLE Picture (picture_id INTEGER PRIMARY KEY AUTOINCREMENT, base64code TEXT, sac_id INTEGER);');
       print('New table created at $path');
     });
   }
@@ -46,7 +55,6 @@ class SACDatabaseService {
       'date',
       'state',
       'location',
-      'picture',
       'offender_id',
       'offender'
     ]);
@@ -68,7 +76,6 @@ class SACDatabaseService {
       'date',
       'state',
       'location',
-      'picture',
       'offender_id',
       'offender'
     ]);
@@ -103,22 +110,98 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, picture, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", "${newSAC.picture}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
+          'INSERT into SAC(title, content, date, state, location, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
+    });
+    List<Map> maps = await db.query('SAC', columns: [
+      'sac_id',
+      'title',
+      'content',
+      'date',
+      'state',
+      'location',
+      'offender_id',
+      'offender'
+    ]);
+    maps.forEach((map) {
+      if (map['content'] == newSAC.content && map['date'] == newSAC.date) {
+        newSAC = SACModel.fromMap(map);
+        print('SAC added: ${newSAC.id}');
+        return newSAC;
+      }
+    });
+  }
+
+  Future<SACModel> addSAC(SACModel newSAC) async {
+    final db = await database;
+    if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
+    int id = await db.transaction((transaction) {
+      transaction.rawInsert(
+          'INSERT into SAC(title, content, date, state, location, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
     });
     newSAC.id = id;
     print('SAC added: ${newSAC.id} ${newSAC.content}');
     return newSAC;
   }
 
+  //picture
+  addPictureInDB(String base64code, int sac_id) async {
+    final db = await database;
+    int id = await db.transaction((transaction) {
+      transaction.rawInsert(
+          'INSERT into Picture(base64code, sac_id) VALUES ("${base64code}", "${sac_id}");');
+    });
+    print('SAC added: ${sac_id}');
+  }
+
+  //pictures
+  addPicturesInDB(List<String> base64code, int sac_id) async {
+    final db = await database;
+    base64code.forEach((element) async {
+      int id = await db.transaction((transaction) {
+        transaction.rawInsert(
+            'INSERT into Picture(base64code, sac_id) VALUES ("${element}", "${sac_id}");');
+      });
+    });
+    print('Picures added: ${sac_id}');
+  }
+
+  Future<List<String>> getPictures(SACModel sac) async {
+    final db = await database;
+    List<String> pictureList = [];
+    List<Map> maps = await db.query('Picture', columns: [
+      'picture_id',
+      'base64code',
+      'sac_id',
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['sac_id'] == sac.id) {
+          pictureList.add(map['base64code']);
+        }
+      });
+    }
+    pictureList = pictureList;
+    return pictureList;
+  }
+
+  //Offender
   Future<OffenderModel> addOffenderInDB(OffenderModel newOffender) async {
     final db = await database;
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
           'INSERT into Offender(name) VALUES ("${newOffender.name}");');
     });
-    newOffender.id = id;
-    print('Offender added: ${newOffender.name}');
-    return newOffender;
+    List<Map> maps = await db.query('Offender', columns: [
+      'offender_id',
+      'name',
+    ]);
+    maps.forEach((map) {
+      if (map['name'] == newOffender.name) {
+        newOffender = OffenderModel.fromMap(map);
+        print('Offender added: ${newOffender.id}');
+        return newOffender;
+      }
+    });
   }
 
   Future<OffenderModel> existingOffender(String name) async {
@@ -153,7 +236,6 @@ class SACDatabaseService {
       'date',
       'state',
       'location',
-      'picture',
       'offender_id',
       'offender'
     ]);
@@ -168,6 +250,7 @@ class SACDatabaseService {
     return offender.sacList;
   }
 
+  //User
   Future<bool> userConnexion(String email, String password) async {
     bool connexion = false;
     final db = await database;
@@ -212,8 +295,17 @@ class SACDatabaseService {
       transaction.rawInsert(
           'INSERT into User(email, password) VALUES ("${email}","${password}");');
     });
-    UserModel newUser = UserModel(id, email, password);
-    print('User added: ${email}');
-    return newUser;
+    List<Map> maps = await db.query('User', columns: [
+      'user_id',
+      'email',
+      'password',
+    ]);
+    maps.forEach((map) {
+      if (map['email'] == email) {
+        UserModel newUser = UserModel.fromMap(map);
+        print('User added: ${newUser.id}');
+        return newUser;
+      }
+    });
   }
 }
