@@ -11,7 +11,7 @@ class SACModel {
   String state;
   DateTime date;
   String location;
-  String picture;
+  List<PictureModel> pictureList;
   OffenderModel offender;
 
   SACModel({
@@ -21,7 +21,6 @@ class SACModel {
     this.state,
     this.date,
     this.location,
-    this.picture,
     this.offender,
   });
 
@@ -33,7 +32,6 @@ class SACModel {
     this.date = DateTime.parse(map['date']);
     this.state = map['state'];
     this.location = map['location'];
-    this.picture = map['picture'];
     this.offender = OffenderModel(map['offender_id'], map['offender']);
   }
 
@@ -46,11 +44,47 @@ class SACModel {
       'state': this.state,
       'date': this.date.toIso8601String(),
       'location': this.location,
-      'picture': this.picture,
       'offender_id': this.offender.id,
       'offender': this.offender.name,
     };
   }
+
+  addSAC(PictureModel picture) {
+    pictureList.add(picture);
+  }
+
+  removeSAC(PictureModel picture) {
+    pictureList.remove(picture);
+  }
+}
+
+class PictureModel {
+  int id;
+  String base64code;
+
+  PictureModel.fromMap(Map<String, dynamic> map) {
+    this.id = map['picture_id'];
+    this.base64code = map['base64code'];
+  }
+
+  PictureModel(int id, String base64code, SACModel sac) {
+    this.id = id;
+    this.base64code = base64code;
+  }
+
+  /*PictureModel.fromMap(Map<String, dynamic> map) {
+    this.id = map['user_id'];
+    this.email = map['email'];
+    this.password = map['password'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'user_id': this.id,
+      'email': this.email,
+      'password': this.password,
+    };
+  }*/
 }
 
 class OffenderModel {
