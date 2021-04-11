@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Simple Login Example"),
+      title: new Text("Page d'authentification"),
       centerTitle: true,
     );
   }
@@ -176,14 +176,14 @@ class _LoginPageState extends State<LoginPage> {
               child: new Text('Login'),
               onPressed: _loginPressed,
             ),
-            new FlatButton(
+            /*new FlatButton(
               child: new Text('Dont have an account? Tap here to register.'),
               onPressed: _formChange,
             ),
             new FlatButton(
               child: new Text('Forgot Password?'),
               onPressed: _passwordReset,
-            )
+            )*/
           ],
         ),
       );
