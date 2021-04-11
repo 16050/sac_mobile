@@ -17,7 +17,7 @@ odooConnexion() {
   client.authenticate('admin', 'test123', 'xlerp').then((username) {
     print('User $username authentified');
   });*/
-  http.post('http://127.0.0.1:8069/xmlrpc/2/common',
+  http.post('http://192.168.1.15:9899/xmlrpc/2/common',
       headers: <String, String>{
         'Content-Type': 'application/xml',
       },
@@ -38,7 +38,7 @@ sendSAC() async {
         'Content-Type': 'application/xml',
       },
       body:
-          '<?xml version="1.0"?><methodCall><methodName>execute</methodName><params><param><value><string>${db_name}</string></value></param><param><value><int>1</int></value></param><param><value><string>${password}</string></value></param><param><value><string>sac_module.sac</string></value></param><param><value><string>create</string></value></param><param><value><struct><member><name>name</name><value><string>${sac.title}</string></value></member></struct><struct><member><name>description</name><value><string>${sac.content}</string></value></member></struct><struct><member><name>adress</name><value><string>${sac.location}</string></value></member></struct></value></param></params></methodCall>',
+          '<?xml version="1.0"?><methodCall><methodName>execute</methodName><params><param><value><string>${db_name}</string></value></param><param><value><int>1</int></value></param><param><value><string>${password}</string></value></param><param><value><string>sac_module.sac</string></value></param><param><value><string>create</string></value></param><param><value><struct><member><name>name</name><value><string>${sac.title}</string></value></member><member><name>description</name><value><string>${sac.content}</string></value></member><member><name>adress</name><value><string>${sac.location}</string></value></member></struct></value></param></params></methodCall>',
     );
   }
 }
