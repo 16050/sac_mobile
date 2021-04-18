@@ -50,12 +50,12 @@ class _EditSACPageState extends State<EditSACPage> {
     super.initState();
     if (widget.existingSAC == null) {
       currentSAC = SACModel(
+          id: 0,
           content: '',
           title: '',
           date: DateTime.now(),
           state: 'Pas encore envoyé',
           location: '',
-          picture: '',
           offender: new OffenderModel(1, ''));
       isSACNew = true;
     } else {
@@ -65,6 +65,8 @@ class _EditSACPageState extends State<EditSACPage> {
     titleController.text = currentSAC.title;
     contentController.text = currentSAC.content;
   }
+
+  String _chosenValue;
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +140,43 @@ class _EditSACPageState extends State<EditSACPage> {
                   border: InputBorder.none,
                 ),
               ),
+            ),
+            //type selection
+            DropdownButton<String>(
+              focusColor: Colors.white,
+              value: _chosenValue,
+              //elevation: 5,
+              style: TextStyle(color: Colors.white),
+              iconEnabledColor: Colors.black,
+              items: <String>[
+                'Android',
+                'IOS',
+                'Flutter',
+                'Node',
+                'Java',
+                'Python',
+                'PHP',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                );
+              }).toList(),
+              hint: Text(
+                "Please choose a langauage",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
+              ),
+              onChanged: (String value) {
+                setState(() {
+                  _chosenValue = value;
+                });
+              },
             ),
             //content
             Padding(
@@ -266,10 +305,14 @@ class _EditSACPageState extends State<EditSACPage> {
   }
 
   Io.File imageFile;
+  List<String> base64codes = [];
+
   _openGallery(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
     this.setState(() {
       imageFile = picture;
+      final bytes = imageFile.readAsBytesSync();
+      base64codes.add(base64Encode(bytes));
     });
     Navigator.of(context).pop();
   }
@@ -278,6 +321,8 @@ class _EditSACPageState extends State<EditSACPage> {
     var picture = await ImagePicker.pickImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = picture;
+      final bytes = imageFile.readAsBytesSync();
+      base64codes.add(base64Encode(bytes));
     });
     Navigator.of(context).pop();
   }
@@ -325,18 +370,22 @@ class _EditSACPageState extends State<EditSACPage> {
       print('Hey there ${currentSAC.content}');
       if (widget.existingSAC == null) {
         currentSAC.location = location;
-        final bytes = imageFile.readAsBytesSync();
-        currentSAC.picture = base64Encode(bytes);
+        //final bytes = imageFile.readAsBytesSync();
+        //currentSAC.picture = base64Encode(bytes);
         print('salam');
       }
     });
     print('bonjour');
     if (isSACNew) {
-      var latestOffender =
+      OffenderModel latestOffender =
           await SACDatabaseService.db.existingOffender(offenderController.text);
-      currentSAC.offender.id = latestOffender.id;
-      currentSAC.offender.name = latestOffender.name;
-      var latestSAC = await SACDatabaseService.db.addSACInDB(currentSAC);
+      currentSAC.offender = latestOffender;
+
+      print(currentSAC.offender.id);
+      SACModel latestSAC = await SACDatabaseService.db.addSACInDB(currentSAC);
+      print(latestSAC.id);
+      await SACDatabaseService.db.addPicturesInDB(base64codes, latestSAC.id);
+      print('sac added');
       setState(() {
         currentSAC = latestSAC;
       });

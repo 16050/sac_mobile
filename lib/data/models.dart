@@ -71,20 +71,23 @@ class PictureModel {
     this.id = id;
     this.base64code = base64code;
   }
+}
 
-  /*PictureModel.fromMap(Map<String, dynamic> map) {
-    this.id = map['user_id'];
-    this.email = map['email'];
-    this.password = map['password'];
+class TypeModel {
+  int id;
+  String name;
+  int price;
+
+  TypeModel.fromMap(Map<String, dynamic> map) {
+    this.id = map['type_id'];
+    this.name = map['name'];
+    this.price = map['price'];
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'user_id': this.id,
-      'email': this.email,
-      'password': this.password,
-    };
-  }*/
+  TypeModel(int id, String base64code, SACModel sac) {
+    this.id = id;
+    this.name = name;
+  }
 }
 
 class OffenderModel {

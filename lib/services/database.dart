@@ -37,7 +37,7 @@ class SACDatabaseService {
       await db
           .execute('INSERT into SAC_type(name, price) VALUES ("type1", "10");');
       await db
-          .execute('INSERT into SAC_type(name, price) VALUES ("type1", "10");');
+          .execute('INSERT into SAC_type(name, price) VALUES ("type2", "20");');
       await db.execute(
           'CREATE TABLE Picture (picture_id INTEGER PRIMARY KEY AUTOINCREMENT, base64code TEXT, sac_id INTEGER);');
       print('New table created at $path');
@@ -107,6 +107,7 @@ class SACDatabaseService {
   //when creating a sac
   Future<SACModel> addSACInDB(SACModel newSAC) async {
     final db = await database;
+    SACModel sac;
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
@@ -123,12 +124,15 @@ class SACDatabaseService {
       'offender'
     ]);
     maps.forEach((map) {
-      if (map['content'] == newSAC.content && map['date'] == newSAC.date) {
+      if (map['content'] == newSAC.content &&
+          map['date'] == newSAC.date.toIso8601String()) {
         newSAC = SACModel.fromMap(map);
         print('SAC added: ${newSAC.id}');
-        return newSAC;
+        sac = newSAC;
+        //sac.id = newSAC.id;
       }
     });
+    return sac;
   }
 
   Future<SACModel> addSAC(SACModel newSAC) async {
@@ -180,13 +184,30 @@ class SACDatabaseService {
         }
       });
     }
-    pictureList = pictureList;
     return pictureList;
+  }
+
+  //Type
+  Future<List<TypeModel>> getTypesFromDB() async {
+    final db = await database;
+    List<TypeModel> typesList = [];
+    List<Map> maps = await db.query('Type', columns: [
+      'type_id',
+      'name',
+      'price',
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        typesList.add(TypeModel.fromMap(map));
+      });
+    }
+    return typesList;
   }
 
   //Offender
   Future<OffenderModel> addOffenderInDB(OffenderModel newOffender) async {
     final db = await database;
+    OffenderModel offender;
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
           'INSERT into Offender(name) VALUES ("${newOffender.name}");');
@@ -199,9 +220,10 @@ class SACDatabaseService {
       if (map['name'] == newOffender.name) {
         newOffender = OffenderModel.fromMap(map);
         print('Offender added: ${newOffender.id}');
-        return newOffender;
+        offender = newOffender;
       }
     });
+    return offender;
   }
 
   Future<OffenderModel> existingOffender(String name) async {

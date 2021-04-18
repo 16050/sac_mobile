@@ -135,12 +135,12 @@ class _ViewSACPageState extends State<ViewSACPage> {
               ),
             ),
             //image
-            Container(
+            /*Container(
                 child: Column(
               children: <Widget>[
                 _showImage(),
               ],
-            )),
+            )),*/
           ],
         ),
         ClipRect(
@@ -186,11 +186,11 @@ class _ViewSACPageState extends State<ViewSACPage> {
     ));
   }
 
-  Widget _showImage() {
+  /*Widget _showImage() {
     final decodedBytes = base64Decode(widget.currentSAC.picture);
     Widget image = Image.memory(decodedBytes);
     return image;
-  }
+  }*/
 
   void handleSave() async {
     await SACDatabaseService.db.updateSACInDB(widget.currentSAC);
