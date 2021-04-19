@@ -148,6 +148,7 @@ class SACDatabaseService {
   }
 
   //picture
+  /*
   addPictureInDB(String base64code, int sac_id) async {
     final db = await database;
     int id = await db.transaction((transaction) {
@@ -155,7 +156,7 @@ class SACDatabaseService {
           'INSERT into Picture(base64code, sac_id) VALUES ("${base64code}", "${sac_id}");');
     });
     print('SAC added: ${sac_id}');
-  }
+  }*/
 
   //pictures
   addPicturesInDB(List<String> base64code, int sac_id) async {
