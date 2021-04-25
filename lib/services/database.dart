@@ -33,11 +33,9 @@ class SACDatabaseService {
       await db.execute(
           'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, offender TEXT);');
       await db.execute(
-          'CREATE TABLE SAC_type (sac_type_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INT);');
-      await db
-          .execute('INSERT into SAC_type(name, price) VALUES ("type1", "10");');
-      await db
-          .execute('INSERT into SAC_type(name, price) VALUES ("type2", "20");');
+          'CREATE TABLE Type (type_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INT);');
+      await db.execute('INSERT into Type(name, price) VALUES ("type1", "10");');
+      await db.execute('INSERT into Type(name, price) VALUES ("type2", "20");');
       await db.execute(
           'CREATE TABLE Picture (picture_id INTEGER PRIMARY KEY AUTOINCREMENT, base64code TEXT, sac_id INTEGER);');
       print('New table created at $path');
@@ -189,9 +187,9 @@ class SACDatabaseService {
   }
 
   //Type
-  Future<List<TypeModel>> getTypesFromDB() async {
+  Future<List<String>> getTypesFromDB() async {
     final db = await database;
-    List<TypeModel> typesList = [];
+    List<String> typesList = [];
     List<Map> maps = await db.query('Type', columns: [
       'type_id',
       'name',
@@ -199,10 +197,28 @@ class SACDatabaseService {
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
-        typesList.add(TypeModel.fromMap(map));
+        typesList.add(map['name']);
       });
     }
     return typesList;
+  }
+
+  Future<TypeModel> getType(String typeName) async {
+    final db = await database;
+    TypeModel type;
+    List<Map> maps = await db.query('Type', columns: [
+      'type_id',
+      'name',
+      'price',
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['name'] == typeName) {
+          type = TypeModel.fromMap(map);
+        }
+      });
+    }
+    return type;
   }
 
   //Offender

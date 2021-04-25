@@ -13,6 +13,7 @@ class SACModel {
   String location;
   List<PictureModel> pictureList;
   OffenderModel offender;
+  TypeModel type;
 
   SACModel({
     this.id,

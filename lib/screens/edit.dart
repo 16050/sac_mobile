@@ -48,6 +48,7 @@ class _EditSACPageState extends State<EditSACPage> {
   void initState() {
     //var location = getUserLocation();
     super.initState();
+    _getTypes();
     if (widget.existingSAC == null) {
       currentSAC = SACModel(
           id: 0,
@@ -67,6 +68,7 @@ class _EditSACPageState extends State<EditSACPage> {
   }
 
   String _chosenValue;
+  String sac_type;
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +133,7 @@ class _EditSACPageState extends State<EditSACPage> {
                     fontSize: 20,
                     fontWeight: FontWeight.w700),
                 decoration: InputDecoration.collapsed(
-                  hintText: 'Enter an offender',
+                  hintText: 'Numéro du contrevenant',
                   hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 20,
@@ -149,32 +151,56 @@ class _EditSACPageState extends State<EditSACPage> {
               style: TextStyle(color: Colors.white),
               iconEnabledColor: Colors.white,
               items: <String>[
-                'Android',
-                'IOS',
-                'Flutter',
-                'Node',
-                'Java',
-                'Python',
-                'PHP',
+                'oui',
+                'non',
               ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
                     value,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 );
               }).toList(),
               hint: Text(
-                "Please choose a langauage",
+                "Le contrevenant est il une entreprise?",
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500),
+              ),
+              onChanged: (String value1) {
+                setState(() {
+                  _chosenValue = value1;
+                });
+              },
+            ),
+            //type selection
+            DropdownButton<String>(
+              focusColor: Colors.white,
+              value: sac_type,
+              //elevation: 5,
+              style: TextStyle(color: Colors.white),
+              iconEnabledColor: Colors.white,
+              items: types.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              }).toList(),
+              hint: Text(
+                "Choisir un type",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
                     fontWeight: FontWeight.w500),
               ),
               onChanged: (String value) {
                 setState(() {
-                  _chosenValue = value;
+                  sac_type = value;
                 });
               },
             ),
@@ -306,6 +332,11 @@ class _EditSACPageState extends State<EditSACPage> {
 
   Io.File imageFile;
   List<String> base64codes = [];
+
+  List<String> types = [];
+  _getTypes() async {
+    types = await SACDatabaseService.db.getTypesFromDB();
+  }
 
   _openGallery(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
