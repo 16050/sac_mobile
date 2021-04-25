@@ -147,7 +147,7 @@ class _EditSACPageState extends State<EditSACPage> {
               value: _chosenValue,
               //elevation: 5,
               style: TextStyle(color: Colors.white),
-              iconEnabledColor: Colors.black,
+              iconEnabledColor: Colors.white,
               items: <String>[
                 'Android',
                 'IOS',

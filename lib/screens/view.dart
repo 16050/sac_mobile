@@ -47,6 +47,7 @@ class _ViewSACPageState extends State<ViewSACPage> {
   bool headerShouldShow = false;
   @override
   Widget build(BuildContext context) {
+    _getPictures();
     return Scaffold(
         body: Stack(
       children: <Widget>[
@@ -193,7 +194,6 @@ class _ViewSACPageState extends State<ViewSACPage> {
   }
 
   List<Widget> _showImages() {
-    _getPictures();
     List<Widget> widgets = [];
     bytes.forEach((element) {
       final decodedBytes = base64Decode(element);
