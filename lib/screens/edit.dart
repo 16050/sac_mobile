@@ -67,7 +67,7 @@ class _EditSACPageState extends State<EditSACPage> {
     contentController.text = currentSAC.content;
   }
 
-  String offender_type;
+  String _chosenValue;
   String sac_type;
 
   @override
@@ -146,7 +146,7 @@ class _EditSACPageState extends State<EditSACPage> {
             //type selection
             DropdownButton<String>(
               focusColor: Colors.white,
-              value: offender_type,
+              value: _chosenValue,
               //elevation: 5,
               style: TextStyle(color: Colors.white),
               iconEnabledColor: Colors.white,
@@ -169,9 +169,9 @@ class _EditSACPageState extends State<EditSACPage> {
                     fontSize: 20,
                     fontWeight: FontWeight.w500),
               ),
-              onChanged: (String value) {
+              onChanged: (String value1) {
                 setState(() {
-                  offender_type = value;
+                  _chosenValue = value1;
                 });
               },
             ),
