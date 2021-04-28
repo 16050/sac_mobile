@@ -31,7 +31,7 @@ class SACDatabaseService {
           'CREATE TABLE User (user_id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT);');
       await db.execute('INSERT into User(email, password) VALUES ("", "");');
       await db.execute(
-          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, offender TEXT);');
+          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, offender TEXT, type TEXT);');
       await db.execute(
           'CREATE TABLE Type (type_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INT);');
       await db.execute('INSERT into Type(name, price) VALUES ("type1", "10");');
@@ -54,7 +54,8 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender'
+      'offender',
+      'type',
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
@@ -76,6 +77,7 @@ class SACDatabaseService {
       'location',
       'offender_id',
       'offender'
+          'type',
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
@@ -109,7 +111,7 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
+          'INSERT into SAC(title, content, date, state, location, offender_id, offender, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}","${newSAC.type.name}");');
     });
     List<Map> maps = await db.query('SAC', columns: [
       'sac_id',
@@ -119,7 +121,8 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender'
+      'offender',
+      'type',
     ]);
     maps.forEach((map) {
       if (map['content'] == newSAC.content &&
@@ -138,7 +141,7 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, offender_id, offender) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}");');
+          'INSERT into SAC(title, content, date, state, location, offender_id, offender, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}", "${newSAC.type.name}");');
     });
     newSAC.id = id;
     print('SAC added: ${newSAC.id} ${newSAC.content}');

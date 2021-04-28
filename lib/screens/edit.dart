@@ -67,7 +67,7 @@ class _EditSACPageState extends State<EditSACPage> {
     contentController.text = currentSAC.content;
   }
 
-  String _chosenValue;
+  String offender_type;
   String sac_type;
 
   @override
@@ -146,7 +146,7 @@ class _EditSACPageState extends State<EditSACPage> {
             //type selection
             DropdownButton<String>(
               focusColor: Colors.white,
-              value: _chosenValue,
+              value: offender_type,
               //elevation: 5,
               style: TextStyle(color: Colors.white),
               iconEnabledColor: Colors.white,
@@ -169,9 +169,9 @@ class _EditSACPageState extends State<EditSACPage> {
                     fontSize: 20,
                     fontWeight: FontWeight.w500),
               ),
-              onChanged: (String value1) {
+              onChanged: (String value) {
                 setState(() {
-                  _chosenValue = value1;
+                  offender_type = value;
                 });
               },
             ),
@@ -394,6 +394,7 @@ class _EditSACPageState extends State<EditSACPage> {
   }
 
   void handleSave() async {
+    TypeModel type = await SACDatabaseService.db.getType(sac_type);
     String location = await getUserLocation();
     setState(() {
       currentSAC.title = titleController.text;
@@ -401,6 +402,7 @@ class _EditSACPageState extends State<EditSACPage> {
       print('Hey there ${currentSAC.content}');
       if (widget.existingSAC == null) {
         currentSAC.location = location;
+        currentSAC.type = type;
         //final bytes = imageFile.readAsBytesSync();
         //currentSAC.picture = base64Encode(bytes);
         print('salam');

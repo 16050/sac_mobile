@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:location/location.dart';
+import 'package:flutter_sac_app/services/database.dart';
 
 var gps = new Location();
 
@@ -14,6 +15,7 @@ class SACModel {
   List<PictureModel> pictureList;
   OffenderModel offender;
   TypeModel type;
+  String type_name;
 
   SACModel({
     this.id,
@@ -23,10 +25,12 @@ class SACModel {
     this.date,
     this.location,
     this.offender,
+    this.type,
   });
 
   //copying db data
   SACModel.fromMap(Map<String, dynamic> map) {
+    var test = getType(map['type']);
     this.id = map['sac_id'];
     this.title = map['title'];
     this.content = map['content'];
@@ -34,6 +38,11 @@ class SACModel {
     this.state = map['state'];
     this.location = map['location'];
     this.offender = OffenderModel(map['offender_id'], map['offender']);
+    this.type_name = map['type'];
+  }
+
+  getType(String name) async {
+    type = await SACDatabaseService.db.getType(name);
   }
 
   //add data to db
@@ -47,6 +56,7 @@ class SACModel {
       'location': this.location,
       'offender_id': this.offender.id,
       'offender': this.offender.name,
+      'type': this.type_name,
     };
   }
 
@@ -85,9 +95,10 @@ class TypeModel {
     this.price = map['price'];
   }
 
-  TypeModel(int id, String base64code, SACModel sac) {
+  TypeModel(int id, String name, int price) {
     this.id = id;
     this.name = name;
+    this.price = price;
   }
 }
 

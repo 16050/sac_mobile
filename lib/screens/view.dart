@@ -24,6 +24,7 @@ class ViewSACPage extends StatefulWidget {
       : super(key: key) {
     this.triggerRefetch = triggerRefetch;
     this.currentSAC = currentSAC;
+    currentSAC.getType(currentSAC.type_name);
   }
   @override
   _ViewSACPageState createState() => _ViewSACPageState();
@@ -113,6 +114,14 @@ class _ViewSACPageState extends State<ViewSACPage> {
                 ),
               ),
             ),*/
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 24.0, top: 36, bottom: 24, right: 24),
+              child: Text(
+                widget.currentSAC.type.name,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+            ),
             //location
             AnimatedOpacity(
               duration: Duration(milliseconds: 500),
