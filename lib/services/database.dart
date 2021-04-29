@@ -26,12 +26,12 @@ class SACDatabaseService {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
-          'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);');
+          'CREATE TABLE Offender (offender_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT);');
       await db.execute(
           'CREATE TABLE User (user_id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT);');
       await db.execute('INSERT into User(email, password) VALUES ("", "");');
       await db.execute(
-          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, offender TEXT, type TEXT);');
+          'CREATE TABLE SAC (sac_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, date TEXT, state TEXT, location TEXT, offender_id INTEGER, type TEXT);');
       await db.execute(
           'CREATE TABLE Type (type_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INT);');
       await db.execute('INSERT into Type(name, price) VALUES ("type1", "10");');
@@ -54,7 +54,6 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender',
       'type',
     ]);
     if (maps.length > 0) {
@@ -76,8 +75,7 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender'
-          'type',
+      'type',
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
@@ -111,7 +109,7 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, offender_id, offender, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}","${newSAC.type.name}");');
+          'INSERT into SAC(title, content, date, state, location, offender_id, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id},"${newSAC.type.name}");');
     });
     List<Map> maps = await db.query('SAC', columns: [
       'sac_id',
@@ -121,7 +119,6 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender',
       'type',
     ]);
     maps.forEach((map) {
@@ -141,7 +138,7 @@ class SACDatabaseService {
     if (newSAC.title.trim().isEmpty) newSAC.title = 'Untitled SAC';
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into SAC(title, content, date, state, location, offender_id, offender, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.offender.name}", "${newSAC.type.name}");');
+          'INSERT into SAC(title, content, date, state, location, offender_id, type) VALUES ("${newSAC.title}", "${newSAC.content}", "${newSAC.date.toIso8601String()}", "${newSAC.state}","${newSAC.location}", ${newSAC.offender.id}, "${newSAC.type.name}");');
     });
     newSAC.id = id;
     print('SAC added: ${newSAC.id} ${newSAC.content}');
@@ -230,14 +227,12 @@ class SACDatabaseService {
     OffenderModel offender;
     int id = await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into Offender(name) VALUES ("${newOffender.name}");');
+          'INSERT into Offender(name, type) VALUES ("${newOffender.name}", "${newOffender.type}");');
     });
-    List<Map> maps = await db.query('Offender', columns: [
-      'offender_id',
-      'name',
-    ]);
+    List<Map> maps =
+        await db.query('Offender', columns: ['offender_id', 'name', 'type']);
     maps.forEach((map) {
-      if (map['name'] == newOffender.name) {
+      if (map['name'] == newOffender.name && map['type'] == newOffender.type) {
         newOffender = OffenderModel.fromMap(map);
         print('Offender added: ${newOffender.id}');
         offender = newOffender;
@@ -246,26 +241,44 @@ class SACDatabaseService {
     return offender;
   }
 
-  Future<OffenderModel> existingOffender(String name) async {
+  Future<OffenderModel> existingOffender(String name, String type) async {
     final db = await database;
-    OffenderModel offender = new OffenderModel(1, '');
-    List<Map> maps = await db.query('Offender', columns: [
-      'offender_id',
-      'name',
-    ]);
+    OffenderModel offender = new OffenderModel(1, '', '');
+    List<Map> maps =
+        await db.query('Offender', columns: ['offender_id', 'name', 'type']);
     if (maps.length > 0) {
       for (Map map in maps) {
-        if (map['name'] == name) {
+        if (map['name'] == name && map['type'] == type) {
           offender = OffenderModel.fromMap(map);
           print('Offender exist in DB');
           return offender;
         } else {
           offender.name = name;
+          offender.type = type;
         }
       }
     }
     offender.name = name;
+    offender.type = type;
     return addOffenderInDB(offender);
+  }
+
+  Future<OffenderModel> getOffender(int offenderId) async {
+    final db = await database;
+    OffenderModel offender;
+    List<Map> maps = await db.query('Offender', columns: [
+      'offender_id',
+      'name',
+      'type',
+    ]);
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        if (map['offender_id'] == offenderId) {
+          offender = OffenderModel.fromMap(map);
+        }
+      });
+    }
+    return offender;
   }
 
   Future<List<SACModel>> getOffenderSAC(OffenderModel offender) async {
@@ -279,11 +292,10 @@ class SACDatabaseService {
       'state',
       'location',
       'offender_id',
-      'offender'
     ]);
     if (maps.length > 0) {
       maps.forEach((map) {
-        if (map['offender'] == offender.name) {
+        if (map['offender_id'] == offender.id) {
           sacList.add(SACModel.fromMap(map));
         }
       });

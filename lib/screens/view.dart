@@ -25,6 +25,7 @@ class ViewSACPage extends StatefulWidget {
     this.triggerRefetch = triggerRefetch;
     this.currentSAC = currentSAC;
     currentSAC.getType(currentSAC.type_name);
+    currentSAC.getOffender(currentSAC.offender_id);
   }
   @override
   _ViewSACPageState createState() => _ViewSACPageState();
@@ -118,7 +119,7 @@ class _ViewSACPageState extends State<ViewSACPage> {
               padding: const EdgeInsets.only(
                   left: 24.0, top: 36, bottom: 24, right: 24),
               child: Text(
-                widget.currentSAC.type.name,
+                widget.currentSAC.type.price.toString(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ),

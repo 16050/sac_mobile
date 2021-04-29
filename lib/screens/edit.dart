@@ -57,7 +57,7 @@ class _EditSACPageState extends State<EditSACPage> {
           date: DateTime.now(),
           state: 'Pas encore envoyé',
           location: '',
-          offender: new OffenderModel(1, ''));
+          offender: new OffenderModel(1, '', ''));
       isSACNew = true;
     } else {
       currentSAC = widget.existingSAC;
@@ -410,8 +410,12 @@ class _EditSACPageState extends State<EditSACPage> {
     });
     print('bonjour');
     if (isSACNew) {
-      OffenderModel latestOffender =
-          await SACDatabaseService.db.existingOffender(offenderController.text);
+      String type_offender = 'personne';
+      if (offender_type == 'oui') {
+        type_offender == 'entreprise';
+      }
+      OffenderModel latestOffender = await SACDatabaseService.db
+          .existingOffender(offenderController.text, type_offender);
       currentSAC.offender = latestOffender;
 
       print(currentSAC.offender.id);

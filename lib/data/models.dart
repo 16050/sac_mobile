@@ -14,6 +14,7 @@ class SACModel {
   String location;
   List<PictureModel> pictureList;
   OffenderModel offender;
+  int offender_id;
   TypeModel type;
   String type_name;
 
@@ -37,12 +38,16 @@ class SACModel {
     this.date = DateTime.parse(map['date']);
     this.state = map['state'];
     this.location = map['location'];
-    this.offender = OffenderModel(map['offender_id'], map['offender']);
+    this.offender_id = map['offender_id'];
     this.type_name = map['type'];
   }
 
   getType(String name) async {
     type = await SACDatabaseService.db.getType(name);
+  }
+
+  getOffender(int id) async {
+    offender = await SACDatabaseService.db.getOffender(id);
   }
 
   //add data to db
@@ -54,8 +59,7 @@ class SACModel {
       'state': this.state,
       'date': this.date.toIso8601String(),
       'location': this.location,
-      'offender_id': this.offender.id,
-      'offender': this.offender.name,
+      'offender_id': this.offender_id,
       'type': this.type_name,
     };
   }
@@ -106,21 +110,25 @@ class OffenderModel {
   int id;
   String name;
   List<SACModel> sacList;
+  String type;
 
-  OffenderModel(int id, String name) {
+  OffenderModel(int id, String name, String type) {
     this.id = id;
     this.name = name;
+    this.type = type;
   }
 
   OffenderModel.fromMap(Map<String, dynamic> map) {
     this.id = map['offender_id'];
     this.name = map['name'];
+    this.type = map['type'];
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'offender_id': this.id,
       'name': this.name,
+      'type': this.type,
     };
   }
 
