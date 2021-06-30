@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
-              decoration: new InputDecoration(labelText: 'Email'),
+              decoration: new InputDecoration(labelText: 'Login'),
             ),
           ),
           new Container(

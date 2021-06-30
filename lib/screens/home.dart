@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          odooConnexion();
+          //odooConnexion();
           sendSAC();
         },
         label: Text('Synchronisation'.toUpperCase()),

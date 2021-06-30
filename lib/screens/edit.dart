@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'dart:io' as Io;
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -11,13 +9,9 @@ import 'package:flutter/painting.dart' as prefix0;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_sac_app/data/models.dart';
 import 'package:flutter_sac_app/services/database.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
-
 import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:flutter/services.dart';
-
-import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditSACPage extends StatefulWidget {
@@ -38,12 +32,10 @@ class _EditSACPageState extends State<EditSACPage> {
   FocusNode titleFocus = FocusNode();
   FocusNode contentFocus = FocusNode();
   FocusNode offenderFocus = FocusNode();
-
   SACModel currentSAC;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   TextEditingController offenderController = TextEditingController();
-
   @override
   void initState() {
     //var location = getUserLocation();
@@ -69,7 +61,6 @@ class _EditSACPageState extends State<EditSACPage> {
 
   String offender_type;
   String sac_type;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -332,7 +323,6 @@ class _EditSACPageState extends State<EditSACPage> {
 
   Io.File imageFile;
   List<String> base64codes = [];
-
   List<String> types = [];
   _getTypes() async {
     types = await SACDatabaseService.db.getTypesFromDB();
