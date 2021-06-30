@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
         android:label="SAC_mobile"
         android:icon="@mipmap/ic_launcher">
